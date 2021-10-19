@@ -23,13 +23,29 @@
 </head>
 <body>
   <div class="container-fluid p-0 m-0 d-flex justify-content-center">
-    <div class="card border-success mb-3" style="max-width: 24rem;">
-        <div class="card-header bg-transparent border-success">Header</div>
-        <div class="card-body text-success">
-          <h5 class="card-title">Success card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    <div class="card text-center shadow-lg" style="max-width: 26rem;">
+        <div class="card-header">TEMPO E TEMPERATURA</div>
+        <div class="card-body">
+          <div class="city">Cidade Exemplo, BR</div>
+          <div class="date">Domingo, 30 de Novembro de 2021</div>
+          <div class="container-img">
+            <i class="fab fa-mixcloud fa-4x"></i>
+          </div>
+          <div class="container-temp my-4 mx-3" style="margin-left: -2%;">
+            <div>22</div>
+            <span>°c</span>
+          </div>
+          <div class="weather">Nublado</div>
+          <div class="low-high">22c / 23c</div>
         </div>
-    <div class="card-footer bg-transparent border-success">Footer</div>
+    <div class="card-footer">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Digite o Nome da Cidade" aria-label="Recipient's username" aria-describedby="button-addon2">
+        <button class="btn btn-outline-secondary" type="button" id="button-addon2">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
     </div>
   </div>
   
