@@ -7,7 +7,6 @@
 .container-temp{
   display: flex;
   justify-content: center;
-  background-color:  3px 6px rgba(0, 0, 0, 0.2);
   box-shadow: 5xp 6px rgba(0, 0, 0, 0.6);
   font-size: 100px;
   font-weight: 900;
