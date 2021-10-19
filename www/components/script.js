@@ -1,13 +1,11 @@
-// Calling api
-// https://openweathermap.org/current
 const api = {
-  key: "70b852138f2c472c9b34d8187d9a9fba",
-  base: "https://api.openweathermap.org/data/2.5/",
-  lang: "pt-br",
-  units: "metric"
+    key: "70b852138f2c472c9b34d8187d9a9fba",
+    base: "https://api.openweathermap.org/data/2.5/",
+    lang: "pt_br",
+    units: "metric"
 }
-// Calling id's as consts
-const city = document.querySelector('.city');
+
+const city = document.querySelector('.city')
 const date = document.querySelector('.date');
 const container_img = document.querySelector('.container-img');
 const container_temp = document.querySelector('.container-temp');
@@ -18,35 +16,122 @@ const search_input = document.querySelector('.form-control');
 const search_button = document.querySelector('.btn');
 const low_high = document.querySelector('.low-high');
 
-// on mobile
-search_button.addEventListener('click', function(){
-  searchResults(search_input.value)
+window.addEventListener('load', () => {
+    //if ("geolocation" in navigator)
+    //catch the results on the load of the page
+     // show alert to allow geolocation of your pc / mobile
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(setPosition, showError);
+    }
+    else {
+        alert('navegador não suporta geolozalicação');
+    }
+    function setPosition(position) {
+        console.log(position)
+        let lat = position.coords.latitude;
+        let long = position.coords.longitude;
+        coordResults(lat, long);
+    }
+    function showError(error) {
+        alert(`erro: ${error.message}`);
+    }
+})
+
+function coordResults(lat, long) {
+    fetch(`${api.base}weather?lat=${lat}&lon=${long}&lang=${api.lang}&units=${api.units}&APPID=${api.key}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`http error: status ${response.status}`)
+            }
+            return response.json();
+        })
+        .catch(error => {
+            alert(error.message)
+        })
+        .then(response => {
+            displayResults(response)
+        });
+}
+
+
+search_button.addEventListener('click', function() {
+    searchResults(search_input.value)
 })
 
 // on pc by pressing "enter" enter = 13
-search_button.addEventListener('keypress', enter)
-function enter(event){
-  key = event.keyCode
-  if(key === 13){
-    searchResults(search_input.value)
-  }
+search_input.addEventListener('keypress', enter)
+function enter(event) {
+    key = event.keyCode
+    if (key === 13) {
+        searchResults(search_input.value)
+    }
 }
 
 // function search based on fetch
 // returning responses on a json file
-function searchResults(city){
-  fetch(`${api.base}weather?q=${city}&lang=${api.lang}&units=${api.units}&APPID=${api.key}`)
-  .then(response => {
-    console.log(response)
-    if(!response.ok){
-      throw new Error (`http error: status $(response.status)`)
+
+function searchResults(city) {
+    fetch(`${api.base}weather?q=${city}&lang=${api.lang}&units=${api.units}&APPID=${api.key}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`http error: status ${response.status}`)
+            }
+            return response.json();
+        })
+        .catch(error => {
+            alert(error.message)
+        })
+        .then(response => {
+            displayResults(response)
+        });
+}
+
+function displayResults(weather) {
+    console.log(weather)
+
+    city.innerText = `${weather.name}, ${weather.sys.country}`;
+
+    let now = new Date();
+    date.innerText = dateBuilder(now);
+
+    let temperature = `${Math.round(weather.main.temp)}`
+    temp_number.innerHTML = temperature;
+    temp_unit.innerHTML = `°c`;
+
+    weather_tempo = weather.weather[0].description;
+    weather_t.innerText = capitalizeFirstLetter(weather_tempo)
+
+    low_high.innerText = `${Math.round(weather.main.temp_min)}°c / ${Math.round(weather.main.temp_max)}°c`;
+}
+
+function dateBuilder(d) {
+    let days = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+    let months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
+    let day = days[d.getDay()]; //getDay: 0-6
+    let date = d.getDate();
+    let month = months[d.getMonth()];
+    let year = d.getFullYear();
+
+    return `${day}, ${date} ${month} ${year}`;
+}
+
+container_temp.addEventListener('click', changeTemp)
+function changeTemp() {
+    temp_number_now = temp_number.innerHTML
+
+    if (temp_unit.innerHTML === "°c") {
+        let f = (temp_number_now * 1.8) + 32
+        temp_unit.innerHTML = "°f"
+        temp_number.innerHTML = Math.round(f)
     }
-    return response.json();
-  })
-  .catch(error => {
-    alert(error.message)
-  })
-  .then(response => {
-   displayResults (response)
-  });
+    else {
+        let c = (temp_number_now - 32) / 1.8
+        temp_unit.innerHTML = "°c"
+        temp_number.innerHTML = Math.round(c)
+    }
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
