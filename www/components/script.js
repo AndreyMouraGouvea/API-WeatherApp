@@ -1,4 +1,5 @@
 // Calling api
+// https://openweathermap.org/current
 const api = {
   key: "70b852138f2c472c9b34d8187d9a9fba",
   base: "https://api.openweathermap.org/data/2.5/",
@@ -14,15 +15,38 @@ const temp_number = document.querySelector('.container-temp div');
 const temp_unit = document.querySelector('.container-temp span');
 const weather_t = document.querySelector('.weather');
 const search_input = document.querySelector('.form-control');
-const seach_button = document.querySelector('.btn');
+const search_button = document.querySelector('.btn');
 const low_high = document.querySelector('.low-high');
 
+// on mobile
+search_button.addEventListener('click', function(){
+  searchResults(search_input.value)
+})
 
+// on pc by pressing "enter" enter = 13
+search_button.addEventListener('keypress', enter)
+function enter(event){
+  key = event.keyCode
+  if(key === 13){
+    searchResults(search_input.value)
+  }
+}
 
-
-
-const div = document.createElement('div');
-div.innerHTML = "<big>Andrey é demais!</big>"
-function teste(){
-  alert("oi");
+// function search based on fetch
+// returning responses on a json file
+function searchResults(city){
+  fetch(`${api.base}weather?q=${city}&lang=${api.lang}&units=${api.units}&APPID=${api.key}`)
+  .then(response => {
+    console.log(response)
+    if(!response.ok){
+      throw new Error (`http error: status $(response.status)`)
+    }
+    return response.json();
+  })
+  .catch(error => {
+    alert(error.message)
+  })
+  .then(response => {
+   displayResults (response)
+  });
 }
