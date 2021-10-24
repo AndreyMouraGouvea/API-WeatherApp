@@ -17,14 +17,12 @@ const search_button = document.querySelector('.btn');
 const low_high = document.querySelector('.low-high');
 
 window.addEventListener('load', () => {
-    //if ("geolocation" in navigator)
-    //catch the results on the load of the page
-     // show alert to allow geolocation of your pc / mobile
+      //take the location of the mobile
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(setPosition, showError);
     }
     else {
-        alert('navegador não suporta geolozalicação');
+        alert('Seu Dispositivo/Navegador Não Suporta Geolozalicação');
     }
     function setPosition(position) {
         console.log(position)
@@ -53,12 +51,11 @@ function coordResults(lat, long) {
         });
 }
 
-
 search_button.addEventListener('click', function() {
     searchResults(search_input.value)
 })
-
-// on pc by pressing "enter" enter = 13
+//on pc, key pressdown "enter" === 13
+//https://www.devmedia.com.br/forum/keypress-lista-dos-codigos-ex-13-enter-27-esc/357198
 search_input.addEventListener('keypress', enter)
 function enter(event) {
     key = event.keyCode
@@ -66,9 +63,6 @@ function enter(event) {
         searchResults(search_input.value)
     }
 }
-
-// function search based on fetch
-// returning responses on a json file
 
 function searchResults(city) {
     fetch(`${api.base}weather?q=${city}&lang=${api.lang}&units=${api.units}&APPID=${api.key}`)
@@ -93,6 +87,9 @@ function displayResults(weather) {
 
     let now = new Date();
     date.innerText = dateBuilder(now);
+
+    let iconName = weather.weather[0].icon;
+    container_img.innerHTML = `<img src="lib/icons/${iconName}.png">`;
 
     let temperature = `${Math.round(weather.main.temp)}`
     temp_number.innerHTML = temperature;
